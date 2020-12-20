@@ -7,10 +7,19 @@ namespace game.loading
 {
     public class LoadingPageManager : MonoBehaviour
     {
+        public enum Type { byName, byIndex }
+
         [SerializeField]
         private Text _textLoading;
         [SerializeField]
         private Slider _loadingSlider;
+
+        [SerializeField]
+        private Type _type;
+        [SerializeField]
+        private string _sceneName;
+        [SerializeField]
+        private int _sceneIndex;
 
         private int _pointNumber;
         // Start is called before the first frame update
@@ -32,14 +41,32 @@ namespace game.loading
             }
 
             _textLoading.text += ".";
-
             StartCoroutine(WaitAndChangeText());
-            StartCoroutine(LoadAsynchronously(1));
+
+
+            if (_type == Type.byIndex)
+                StartCoroutine(LoadAsynchronously(_sceneIndex));
+            else
+                StartCoroutine(LoadAsynchronously(_sceneName));
         }
 
-        IEnumerator LoadAsynchronously(int scenceIndex)
+        private IEnumerator LoadAsynchronously(int scenceIndex)
         {
             AsyncOperation operation = SceneManager.LoadSceneAsync(scenceIndex);
+
+            while (!operation.isDone)
+            {
+
+                _loadingSlider.value = operation.progress;
+                yield return null;
+
+            }
+
+        }
+
+        private IEnumerator LoadAsynchronously(string sceneName)
+        {
+            AsyncOperation operation = SceneManager.LoadSceneAsync(sceneName);
 
             while (!operation.isDone)
             {
