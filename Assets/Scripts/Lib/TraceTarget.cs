@@ -21,6 +21,11 @@ public class TraceTarget : MonoBehaviour
     [SerializeField]
     private TraceAxis _traceOn;
 
+    [SerializeField]
+    private bool _isSlerp = false;
+    [SerializeField]
+    private float _movingSpeed = 10;
+
     // Start is called before the first frame update
     private void Start()
     {
@@ -28,16 +33,21 @@ public class TraceTarget : MonoBehaviour
     }
 
     // Update is called once per frame
-    private void Update()
+    private void FixedUpdate()
     {
         if (_isTrace)
         {
             Vector3 vec = _initDeltaPosition + _target.position;
-            transform.position = new Vector3(
+            Vector3 goPos = new Vector3(
                 (_traceOn.x) ? vec.x : transform.position.x,
                 (_traceOn.y) ? vec.y : transform.position.y,
                 (_traceOn.z) ? vec.z : transform.position.z
                 );
+
+            if (_isSlerp)
+                transform.position = Vector3.Slerp(transform.position, goPos, _movingSpeed * Time.fixedDeltaTime);
+            else
+                transform.position = goPos;
 
         }
     }

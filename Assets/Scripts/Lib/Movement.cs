@@ -42,6 +42,9 @@ namespace game.lib
         {
             if (_movingType == MovingType.Transform && _transform == null)
                 Debug.LogError("Please add the transfrom it is empty");
+
+            if (_onStart)
+                StartMove();
         }
 
         // Update is called once per frame
