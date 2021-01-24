@@ -13,6 +13,8 @@ namespace game.ui
         private Text _textCounting;
         [SerializeField]
         private float _timeForAdd = 0.1f;
+        [SerializeField]
+        private float _stepsNumber = 10;
 
         [Header("Events")]
         [SerializeField]
@@ -42,7 +44,12 @@ namespace game.ui
             if(amount <= _totalAmount)
             {
                 _textCounting.text = amount.ToString();
-                StartCoroutine(WaitAndAddOne(amount + 1));
+
+                int addingAmount = (int)(_totalAmount / _stepsNumber);
+                if (addingAmount == 0)
+                    addingAmount = 1;
+
+                StartCoroutine(WaitAndAddOne(amount + addingAmount));
             }
             else
             {
